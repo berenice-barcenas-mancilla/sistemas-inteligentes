@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Probabilidades COVID-19</title>
+    <!-- CDN Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!--CSS -->
+    <link href="css/estilo.css" rel="stylesheet">
+
+</head>
+
+<body style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+    <!--Fondo-->
+    <div class="screen">
+        <div class="rectangle one"></div>
+        <div class="rectangle two"></div>
+        <div class="rectangle three"></div>
+        <div class="rectangle four"></div>
+        <div class="rectangle five"></div>
+        <div class="rectangle six"></div>
+        <div class="rectangle seven"></div>
+        <div class="rectangle eight"></div>
+        <div class="rectangle nine"></div>
+        <div class="rectangle ten"></div>
+        <div class="rectangle eleven"></div>
+        <div class="rectangle twelve"></div>
+        <div class="rectangle thirteen"></div>
+        <div class="rectangle fourteen"></div>
+        <div class="rectangle fifteen"></div>
+        <div class="rectangle sixteen"></div>
+        <div class="rectangle seventeen"></div>
+        <div class="rectangle eighteen"></div>
+        <div class="rectangle nineteen"></div>
+        <div class="rectangle twenty"></div>
+        <div class="rectangle twentyone"></div>
+        <div class="rectangle twentytwo"></div>
+        <div class="rectangle twentythree"></div>
+        <div class="rectangle twentyfour"></div>
+        <div class="rectangle twentyfive"></div>
+        <div class="rectangle twentysix"></div>
+        <div class="rectangle twentyseven"></div>
+        <div class="rectangle twentyeight"></div>
+        <div class="rectangle twentynine"></div>
+        <div class="rectangle thirty"></div>
+    </div>
+    <!--Formulario-->
+    <div class="container  rounded-border">
+        <h2 class="text-center mb-4">Calculadora de Probabilidades COVID-19</h2>
+        <form id="covidForm" onsubmit="event.preventDefault(); calculateProbability();">
+            <div class="mb-3">
+                <label for="gender" class="form-label">Género:</label>
+                <select id="gender" name="gender" class="form-select rounded-border">
+                    <option value="male">Masculino</option>
+                    <option value="female">Femenino</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="healthStatus" class="form-label">Estado de Salud:</label>
+                <select id="healthStatus" name="healthStatus" class="form-select rounded-border">
+                    <option value="hospitalized">Hospitalizado</option>
+                    <option value="ambulatory">Ambulatorio</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="preexistingCondition" class="form-label">Condición Preexistente:</label>
+                <select id="preexistingCondition" name="preexistingCondition" class="form-select rounded-border">
+                    <option value="hypertension">Hipertensión</option>
+                    <option value="obesity">Obesidad</option>
+                    <option value="diabetes">Diabetes</option>
+                    <option value="smoking">Tabaquismo</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary rounded-border">Calcular Probabilidad</button>
+        </form>
+        <div id="result" class="mt-4 rounded-border p-3"></div>
+    </div>
+    <!-- Bootstrap Bundle with Popper -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!--Resolucion del problema-->
+
+    <script>
+        // Probabilidades condicionales dadas
+        const probabilities = {
+            gender: {
+                male: 0.5388, //Probabilidad de ser hombre
+                female: 0.4612  //Probabilidad de ser mujer
+            },
+            healthStatus: {
+                hospitalized: 0.0791, //Probabilidad de estar hospitalizado
+                ambulatory: 0.9209  //Probabilidad de estar en estado ambulatorio
+            },
+            preexistingCondition: {
+                hypertension: 0.1126, //Probabilidad de tener hipertensión
+                obesity: 0.1028, //Probabilidad de tener obesidad
+                diabetes: 0.0815, //Probabilidad de tener diabetes
+                smoking: 0.0581 //Probabilidad de ser fumador
+            }
+        };
+
+        //Función para calcular la probabilidad
+        function calculateProbability() {
+            // Se obtienenlos valores seleccionados por el usuario
+            const gender = document.getElementById('gender').value;
+            const healthStatus = document.getElementById('healthStatus').value;
+            const preexistingCondition = document.getElementById('preexistingCondition').value;
+
+            //Calcula las probabilidades condicionales dadas las selecciones del usuario
+            const pGender = probabilities.gender[gender]; //Probabilidad de género seleccionado
+            const pHealthStatus = probabilities.healthStatus[healthStatus]; //Probabilidad de estado de salud seleccionado
+            const pPreexistingCondition = probabilities.preexistingCondition[preexistingCondition]; //Probabilidad de condición preexistente seleccionada
+
+            //Calcula las probabilidades condicionales dadas COVID-19
+            const pCOVIDGivenGender = pGender; //Probabilidad de COVID-19 dado el género
+            const pCOVIDGivenHealthStatus = pHealthStatus; //Probabilidad de COVID-19 dado el estado de salud
+            const pCOVIDGivenPreexistingCondition = pPreexistingCondition; //Probabilidad de COVID-19 dado la condición preexistente
+
+            //Calcula la probabilidad de tener una cierta condición preexistente dado que una persona tiene COVID-19. utilizando el teorema de Bayes
+            const pGenderGivenCOVID = (pCOVIDGivenGender * probabilities.gender[gender]) / (pCOVIDGivenGender *
+                probabilities.gender.male + pCOVIDGivenGender * probabilities.gender.female); //Probabilidad de género dado COVID-19
+            const pHealthStatusGivenCOVID = (pCOVIDGivenHealthStatus * probabilities.healthStatus[healthStatus]) /
+                (pCOVIDGivenHealthStatus * probabilities.healthStatus.hospitalized + pCOVIDGivenHealthStatus *
+                    probabilities.healthStatus.ambulatory); //Probabilidad de estado de salud dado COVID-19
+            const pPreexistingConditionGivenCOVID = (pCOVIDGivenPreexistingCondition *
+                probabilities.preexistingCondition[preexistingCondition]) / (pCOVIDGivenPreexistingCondition *
+                    probabilities.preexistingCondition.hypertension + pCOVIDGivenPreexistingCondition * probabilities.preexistingCondition.obesity +
+                    pCOVIDGivenPreexistingCondition * probabilities.preexistingCondition.diabetes + pCOVIDGivenPreexistingCondition *
+                    probabilities.preexistingCondition.smoking); //Probabilidad de condición preexistente dado COVID-19
+
+            //resultado con las probabilidades calculadas
+            const result = `
+              <p>Probabilidad de ser ${gender === "male" ? "Hombre" : "Mujer"} dado que tiene COVID-19: ${(pGenderGivenCOVID * 100).toFixed(2)}%</p>
+              <p>Probabilidad de ser ${healthStatus === "hospitalized" ? "Hospitalizado" : "Ambulatorio"} dado que tiene COVID-19: ${(pHealthStatusGivenCOVID * 100).toFixed(2)}%</p>
+              <p>Probabilidad de tener ${preexistingCondition === "hypertension" ? "Hipertensión" : preexistingCondition === "obesity" ? "Obesidad" : preexistingCondition === "diabetes" ? "Diabetes" : "Tabaquismo"} dado que tiene COVID-19: ${(pPreexistingConditionGivenCOVID * 100).toFixed(2)}%</p>
+          `;
+
+            //muestra los resultados
+            document.getElementById('result').innerHTML = result;
+        }
+    </script>
+    <!--Resolucion del problema-->
+
+
+    <!--Fondo-->
+    <script>
+        var rectangle = (element) => {
+            document.querySelector(element).style.left = Math.floor(Math.random() * (40 - 20) + 20) + '%';
+            document.querySelector(element).style.top = Math.floor(Math.random() * (40 - 20) + 20) + '%';
+            document.querySelector(element).style.width = Math.floor(Math.random() * (100 - 20) + 20) + '%';
+            document.querySelector(element).style.height = Math.floor(Math.random() * (100 - 20) + 20) + '%';
+            document.querySelector(element).style.backgroundColor = "#000000".replace(/0/g, function () {
+                return (~~(Math.random() * 16)).toString(16);
+            });
+            document.querySelector(element).style.transform = "rotate(" + Math.floor(Math.random() * 360) + 'deg' + ')' + ' ' + 'translateX(' + Math.floor(Math.random() * (100 - 0) + 0) + '%' + ')' + ' ' + 'translateY(' + Math.floor(Math.random() * (100 - 0) + 0) + '%' + ')';
+        }
+
+        rectangle('.rectangle.one');
+        rectangle('.rectangle.two');
+        rectangle('.rectangle.three');
+        rectangle('.rectangle.four');
+        rectangle('.rectangle.five');
+        rectangle('.rectangle.six');
+        rectangle('.rectangle.seven');
+        rectangle('.rectangle.eight');
+        rectangle('.rectangle.nine');
+        rectangle('.rectangle.ten');
+        rectangle('.rectangle.eleven');
+        rectangle('.rectangle.twelve');
+        rectangle('.rectangle.thirteen');
+        rectangle('.rectangle.fourteen');
+        rectangle('.rectangle.fifteen');
+        rectangle('.rectangle.sixteen');
+        rectangle('.rectangle.seventeen');
+        rectangle('.rectangle.eighteen');
+        rectangle('.rectangle.ninteen');
+        rectangle('.rectangle.twenty');
+        rectangle('.rectangle.twentyone');
+        rectangle('.rectangle.twentytwo');
+        rectangle('.rectangle.twentythree');
+        rectangle('.rectangle.twentyfour');
+        rectangle('.rectangle.twentyfive');
+        rectangle('.rectangle.twentysix');
+        rectangle('.rectangle.twentyseven');
+        rectangle('.rectangle.twentyeight');
+        rectangle('.rectangle.twentynine');
+        rectangle('.rectangle.thirty');
+        document.querySelector('.screen').style.backgroundColor = "#000000".replace(/0/g, function () {
+            return (~~(Math.random() * 16)).toString(16);
+        });
+
+        var button = document.querySelector('.newWallpaper');
+        document.onkeyup = (e) => {
+            if (e.keyCode == 32) {
+                rectangle('.rectangle.one');
+                rectangle('.rectangle.two');
+                rectangle('.rectangle.three');
+                rectangle('.rectangle.four');
+                rectangle('.rectangle.five');
+                rectangle('.rectangle.six');
+                rectangle('.rectangle.seven');
+                rectangle('.rectangle.eight');
+                rectangle('.rectangle.nine');
+                rectangle('.rectangle.ten');
+                rectangle('.rectangle.eleven');
+                rectangle('.rectangle.twelve');
+                rectangle('.rectangle.thirteen');
+                rectangle('.rectangle.fourteen');
+                rectangle('.rectangle.fifteen');
+                rectangle('.rectangle.sixteen');
+                rectangle('.rectangle.seventeen');
+                rectangle('.rectangle.eighteen');
+                rectangle('.rectangle.ninteen');
+                rectangle('.rectangle.twenty');
+                rectangle('.rectangle.twentyone');
+                rectangle('.rectangle.twentytwo');
+                rectangle('.rectangle.twentythree');
+                rectangle('.rectangle.twentyfour');
+                rectangle('.rectangle.twentyfive');
+                rectangle('.rectangle.twentysix');
+                rectangle('.rectangle.twentyseven');
+                rectangle('.rectangle.twentyeight');
+                rectangle('.rectangle.twentynine');
+                rectangle('.rectangle.thirty');
+                document.querySelector('.screen').style.backgroundColor = "#000000".replace(/0/g, function () {
+                    return (~~(Math.random() * 16)).toString(16);
+                });
+                document.querySelector('.text').style.opacity = 0;
+            }
+        }
+
+    </script>
+    <!--Fondo-->
+</body>
+</html>
