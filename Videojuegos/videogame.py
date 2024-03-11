@@ -17,9 +17,6 @@ model.add(Dense(8,activation='relu')) #Añade una capa densamente conectada con 
 model.add(Dense(4,activation='softmax')) #Añade una capa densamente conectada con 5 neuronas y función de activación softmax
 
 #compila el modelo
-#loss='sparse_categorical_crossentropy'`: Define la función de pérdida para calcular el error entre las predicciones del modelo y las etiquetas reales.
-#optimizer=adam :Especifica el algoritmo de optimización Adam, que se utiliza para ajustar los pesos del modelo durante el entrenamiento con el fin de minimizar la función de pérdida.
-#metrics=['accuracy']`: Define las métricas que se utilizarán para evaluar el rendimiento del modelo durante el entrenamiento y la evaluación, en este caso, se utiliza la precisión (accuracy) para medir la proporción de muestras correctamente clasificadas.
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 #Entrenamiento del modelo
