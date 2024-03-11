@@ -22,24 +22,24 @@ model.add(Dense(4,activation='softmax')) #Añade una capa densamente conectada c
 #metrics=['accuracy']`: Define las métricas que se utilizarán para evaluar el rendimiento del modelo durante el entrenamiento y la evaluación, en este caso, se utiliza la precisión (accuracy) para medir la proporción de muestras correctamente clasificadas.
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-# Entrenar el modelo
+#Entrenamiento del modelo
 history = model.fit(x, y, epochs=120, batch_size=10, verbose=1)
 
-#Imprime la precisión de entrenamiento después de cada iteración
-train_accuracy = history.history['accuracy']
-for epoch, accuracy in enumerate(train_accuracy, 1):
-    print(f'Iteración {epoch}: precisión de entrenamiento = {accuracy * 100:.2f}%')
+#Impresion de la precisión de entrenamiento después de cada iteración
+train_accuracy = history.history['accuracy'] #se btiene la precisión de entrenamiento de la historia
+for epoch, accuracy in enumerate(train_accuracy, 1): #se itera sobre la precisión del entrenamiento
+    print(f'Iteración {epoch}: precisión de entrenamiento = {accuracy * 100:.2f}%') #se imprime la precisión de entrenamiento para cada iteración en formato específico
 
 #imprime la precisión final del entrenamiento
 final_train_accuracy = train_accuracy[-1]
 print(f'Precisión final del entrenamiento = {final_train_accuracy * 100:.2f}%')
 
 #toma a 5 datos para hacer su evaluacion
-indices_aleatorios = numpy.random.choice(x.shape[0], 5, replace=False)
-x_evaluacion = x[indices_aleatorios]
-y_evaluacion = y[indices_aleatorios]
+indices_aleatorios = numpy.random.choice(x.shape[0], 5, replace=False) #se selecciona 5 índices aleatorios
+x_evaluacion = x[indices_aleatorios] #se obtienen los datos de entrada para evaluación
+y_evaluacion = y[indices_aleatorios] #se obtienen las etiquetas correspondientes para evaluación
 
-#realiza prediccion a esos 5 datos
+#realiza las predicciones utilizando los datos de evaluación
 prediction = model.predict(x_evaluacion)
 
 #define las acciones
@@ -51,21 +51,24 @@ acciones_dict = {
 }
 
 #aplica porcentaje de selección  para las predicciones
-porcentaje = 0.75
-accion = []
+porcentaje = 0.75 #se define el porcentaje de selección de probabilidad para considerar una predicción como válida
+accion = [] #se crea una lista vacía para almacenar las acciones resultantes de las predicciones
 
-
-#imprime los datos de los registros evaluados junto con las acciones predichas y reales
+#se itera sobre los datos de evaluación y las predicciones
 for i, (datos, prediccion) in enumerate(zip(x_evaluacion, prediction), 1):
+    #obtiene la acción predicha y su índice
     accion_predicha = numpy.argmax(prediccion)
+    #comprueba si la probabilidad máxima de la predicción supera el porcentaje de selección establecido
     if numpy.max(prediccion) >= porcentaje:
+        #agrega la acción predicha y la acción real correspondiente a la lista de acciones
         accion.append((acciones_dict[accion_predicha], acciones_dict[int(y_evaluacion[i-1])]))
     else:
-        accion.append(("No predicho ( porcentaje de selección  no alcanzado)", acciones_dict[int(y_evaluacion[i-1])]))
+        #si el porcentaje de selección no se alcanza, se agrega un mensaje indicando esto
+        accion.append(("Opps! Ocurrio un error con la prediccion ( porcentaje de selección no alcanzado)", acciones_dict[int(y_evaluacion[i-1])]))
+    #imprime los detalles del registro, incluyendo los datos, la acción predicha y la acción real
+    print(f"Registro {i}: Datos: {datos}{int(y_evaluacion[i-1])}, Acción predicha: {accion[-1][0]},  Acción real en datos: {accion[-1][1]}")
 
-    print(f"Registro {i}: Datos: {datos}, Acción predicha: {accion[-1][0]}, Acción real en datos: {accion[-1][1]}")
 
-
-#Evaluar precisión en la evaluación de los 5 registros
+#Evalua la precisión en la evaluación de los 5 registros
 accuracy_evaluation = model.evaluate(x_evaluacion, y_evaluacion, verbose=0)
 print(f'\nPrecisión de la evaluación de los 5 registros = {accuracy_evaluation[1] * 100:.2f}%')
